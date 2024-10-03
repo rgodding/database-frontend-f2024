@@ -1,0 +1,5 @@
+.find-person-table {
+    max-height: 300px;
+    overflow-y: scroll;
+    width: fit-content;
+}
