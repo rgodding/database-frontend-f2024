@@ -1,8 +1,7 @@
+import { Box, Button, Grid, GridItem, Input, Table, TableCaption, TableContainer, Tbody, Td, Text, Th, Thead, Tr } from "@chakra-ui/react";
 import { useState } from "react";
 import { Address, Person } from "../interfaces/domains";
 import { generateFindPerson, generateRandomAddress, generateRandomPerson } from "../services/fake-person-generator";
-import { Box, Grid, GridItem, Text, Input, Button } from "@chakra-ui/react";
-import { Table, Thead, Tbody, Tfoot, Tr, Th, Td, TableCaption, TableContainer } from "@chakra-ui/react";
 import "../test-style.css";
 
 export default function TestPage() {
