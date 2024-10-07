@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { Address, Person } from "../interfaces/domains";
 import { generateFindPerson, generateRandomAddress, generateRandomPerson } from "../services/fake-person-generator";
+import { Box, Grid, GridItem, Text, Input, Button } from "@chakra-ui/react";
+import { Table, Thead, Tbody, Tfoot, Tr, Th, Td, TableCaption, TableContainer } from "@chakra-ui/react";
 import "../test-style.css";
 
 export default function TestPage() {
@@ -19,91 +21,110 @@ export default function TestPage() {
         setAddress(randomAddress);
     }
 
-    const findPerson = () => {
+    function findPerson() {
         const foundPerson = generateFindPerson(search);
         setPersonList(foundPerson);
-    };
+    }
+
+    function handleSearchInput(value: string) {
+        console.log(value);
+        setSearch(value);
+    }
 
     return (
-        <div>
-            <h1>TestPage</h1>
-            <div>
-                <h2>1. Get Random Person</h2>
-                <div>
-                    <div>
-                        <h4>Random Person</h4>
-                        {person === null ? (
-                            <p>No person</p>
-                        ) : (
-                            <div>
-                                <p>Firstname: {person.firstname}</p>
-                                <p>Surname: {person.surname}</p>
-                                <p>CPR: {person.cpr}</p>
-                                <p>Gender: {person.gender}</p>
-                            </div>
-                        )}
-                    </div>
-                    <button onClick={generatePerson}>Get Random Person</button>
-                </div>
-                <div>
-                    <div>
-                        <h4>Random Address</h4>
-                        {address === null ? (
-                            <p>No Address</p>
-                        ) : (
-                            <div>
-                                <p>City: {address.city}</p>
-                                <p>Postal: {address.postal}</p>
-                            </div>
-                        )}
-                    </div>
-                    <button onClick={generateAddress}>Get Random Person</button>
-                </div>
-                <div>
-                    <div>Find Person</div>
-                    <div>
-                        <div>
-                            <input
-                                type="text"
-                                value={search}
-                                onChange={(event) => setSearch(event.target.value)}
-                                placeholder="Search for person"
-                            />
-                            <button onClick={findPerson}>Find Person</button>
-                        </div>
-                        <p>Person:</p>
-                        {personList === null ? (
-                            <p>No person</p>
-                        ) : (
-                            <div>
-                                <p>Matches</p>
-                                <div className="find-person-table">
-                                    <table>
-                                        <thead>
-                                            <tr>
-                                                <th>Firstname</th>
-                                                <th>Surname</th>
-                                                <th>CPR</th>
-                                                <th>Gender</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {personList.map((personFromList) => (
-                                                <tr key={personFromList.cpr}>
-                                                    <td>{personFromList.firstname}</td>
-                                                    <td>{personFromList.surname}</td>
-                                                    <td>{personFromList.cpr}</td>
-                                                    <td>{personFromList.gender}</td>
-                                                </tr>
-                                            ))}
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        )}
-                    </div>
-                </div>
-            </div>
-        </div>
+        <>
+            <Grid templateColumns="repeat(3, 1fr)" gap={6}>
+                <Box
+                    w="100%"
+                    h="40vh"
+                    bg="gray.100"
+                    padding={4}
+                    display="flex"
+                    flexDirection="column"
+                    justifyContent="space-between">
+                    <Box>
+                        <Text fontSize="xl" fontWeight="bold" marginY={4}>
+                            Get Random Person
+                        </Text>
+                        <Grid templateColumns={"reapeat(1, 1fr)"} gap={2} w={"50%"}>
+                            <BoxStyle1 label="Firstname" value={person?.firstname || ""} />
+                            <BoxStyle1 label="Surname" value={person?.surname || ""} />
+                            <BoxStyle1 label="CPR" value={person?.cpr || ""} />
+                            <BoxStyle1 label="Gender" value={person?.gender || ""} />
+                        </Grid>
+                    </Box>
+                    <Button mt={4} bg="gray.300" alignContent={"end"} onClick={generatePerson}>
+                        Get Random Person
+                    </Button>
+                </Box>
+                <Box
+                    w="100%"
+                    h="40vh"
+                    bg="gray.100"
+                    padding={4}
+                    display="flex"
+                    flexDirection="column"
+                    justifyContent="space-between">
+                    <Box>
+                        <Text fontSize="xl" fontWeight="bold" marginY={4}>
+                            Get Random Address
+                        </Text>
+                        <Grid templateColumns={"reapeat(1, 1fr)"} gap={2} w={"25%"}>
+                            <BoxStyle1 label="City" value={address?.city || ""} />
+                            <BoxStyle1 label="Postal" value={address?.postal || ""} />
+                        </Grid>
+                    </Box>
+                    <Button mt={4} bg="gray.300" onClick={generateAddress}>
+                        Get Random Address
+                    </Button>
+                </Box>
+                <Box h="75vh" overflowY={"scroll"} bg="gray.100" padding={4}>
+                    <Text fontSize="xl" fontWeight="bold" marginY={4}>
+                        Find Person
+                    </Text>
+                    <Input
+                        type="text"
+                        value={search}
+                        onChange={(event) => handleSearchInput(event.target.value)}
+                        placeholder="Search for person"
+                    />
+                    <Button mt={4} bg="gray.300" onClick={findPerson}>
+                        Find Person
+                    </Button>
+                    <TableContainer>
+                        <Table variant="simple">
+                            <TableCaption>Found persons</TableCaption>
+                            <Thead>
+                                <Tr>
+                                    <Th>Firstname</Th>
+                                    <Th>Surname</Th>
+                                    <Th>Gender</Th>
+                                    <Th>CPR</Th>
+                                </Tr>
+                            </Thead>
+                            <Tbody>
+                                {personList?.map((person) => (
+                                    <Tr key={person.cpr}>
+                                        <Td>{person.firstname}</Td>
+                                        <Td>{person.surname}</Td>
+                                        <Td>{person.gender}</Td>
+                                        <Td>{person.cpr}</Td>
+                                    </Tr>
+                                ))}
+                            </Tbody>
+                        </Table>
+                    </TableContainer>
+                </Box>
+            </Grid>
+        </>
+    );
+}
+
+function BoxStyle1({ label, value }: { label: string; value: string }) {
+    return (
+        <GridItem display="flex" justifyContent={"space-between"} flexDirection="row">
+            <Text fontWeight={"bold"}>{label}:</Text>
+            <Text>{value}</Text>
+        </GridItem>
     );
 }
