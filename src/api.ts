@@ -1,42 +1,49 @@
 // src/api.ts
 
-// Definer en Person-type
-type Person = {
+// Definer typer for PartialPersonData og FullPersonDTO (hvis du kender deres strukturer)
+type PartialPersonData = {
+    firstName: string;
+    lastName: string;
+    // Tilføj flere felter efter behov
+};
+
+type FullPersonDTO = {
     id: number;
     firstName: string;
     lastName: string;
-    // Tilføj flere felter, hvis nødvendigt
+    dateOfBirth: string;
+    // Tilføj flere felter efter behov
 };
 
-// Hent alle personer
-export async function fetchPersons(): Promise<Person[]> {
-    const response = await fetch("http://localhost:8080/api/persons");
+type CprResponse = {
+    cpr: string;
+};
+
+// Hent CPR-nummer
+export async function fetchCpr(): Promise<CprResponse> {
+    const response = await fetch(`http://localhost:8080/api/persons/cpr`);
     if (!response.ok) {
-        throw new Error("Failed to fetch persons");
+        throw new Error("Failed to fetch CPR");
     }
     return await response.json();
 }
 
-// Hent en person ud fra ID
-export async function fetchPersonById(personId: string): Promise<Person> {
-    const response = await fetch(`http://localhost:8080/api/persons/${personId}`);
-    if (!response.ok) {
-        throw new Error("Failed to fetch person");
+// Hent person data baseret på DTO-type
+export async function fetchPartialPersonData(dtoType: string): Promise<PartialPersonData> {
+    const response = await fetch(`http://localhost:8080/api/persons/${dtoType}`);
+    if (response.status === 404) {
+        throw new Error("Person not found"); // Håndter 404 specifikt
+    } else if (!response.ok) {
+        throw new Error("Failed to fetch partial person data");
     }
     return await response.json();
 }
 
-// Opret en person
-export async function createPerson(person: Person): Promise<Person> {
-    const response = await fetch("http://localhost:8080/api/persons", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify(person),
-    });
+// Hent en liste af personer i bulk
+export async function fetchBulkPersons(count: number = 10): Promise<FullPersonDTO[]> {
+    const response = await fetch(`http://localhost:8080/api/persons/bulk?count=${count}`);
     if (!response.ok) {
-        throw new Error("Failed to create person");
+        throw new Error("Failed to fetch bulk persons");
     }
     return await response.json();
 }
